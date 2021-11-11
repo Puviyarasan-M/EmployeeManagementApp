@@ -9,7 +9,7 @@ app.use(bodyPasser.json())
 var ObjectId = require('mongodb').ObjectID;
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
-var config = require('../HelloApp/config');
+var config = require('../EmpMApp/config');
 
 
 

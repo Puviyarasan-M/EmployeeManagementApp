@@ -55,7 +55,12 @@ app.controller('AppCtrl',['$scope', '$http', function($scope,$http)
 
       $http({
         method: 'GET',
-        url: '/emp/' + id
+        url: '/emp/' + id,
+        headers:
+         {
+          'Content-Type': 'application/json',
+           'x-access-token' : $scope.token
+        }
      }).then(function (response)
      {
       $scope.fname = response.data[0].name;
@@ -77,7 +82,8 @@ app.controller('AppCtrl',['$scope', '$http', function($scope,$http)
         method: 'PUT',
         url: '/emp/' + $scope.empId,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'x-access-token' : $scope.token
         },
         data:
          {
@@ -108,7 +114,8 @@ app.controller('AppCtrl',['$scope', '$http', function($scope,$http)
         url: '/emp/' + id,
         headers: 
         {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'x-access-token' : $scope.token
         }
        }).then(function (response)
        {

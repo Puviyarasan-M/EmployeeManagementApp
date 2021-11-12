@@ -10,6 +10,7 @@ var ObjectId = require('mongodb').ObjectID;
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 var config = require('../EmpMApp/config');
+const auth = require("../EmpMApp/middleware/auth");
 
 
 
@@ -24,7 +25,7 @@ app.listen(1910 , () =>
     console.log('Server is Running');
 })
 
-app.get('/emp', (req, res) =>
+app.get('/emp',(req, res) =>
  {
     db.collection('employees').find().toArray()
     .then(results => {
@@ -40,16 +41,8 @@ app.get('/emp', (req, res) =>
     .catch(error => console.error(error))
   })
 
-app.post('/emp', (req, res) => {
-  console.log("Req token: in");
-  var token = req.headers['x-access-token'];
-  if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
-
-  jwt.verify(token, config.secret, function(err, decoded) {
-    if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
-    console.log("CORRECT TOKEN")
-    
-  });
+app.post('/emp', auth ,(req, res) => {
+  
 
     employeeCollections.insertOne(req.body)
       .then(res =>
@@ -60,10 +53,10 @@ app.post('/emp', (req, res) => {
 
   })
 
-  app.get('/emp/:id', function (req, res)
+  app.get('/emp/:id', auth,function (req, res)
    {
     var id = req.params.id;
-    console.log(id)
+  
 
     db.collection('employees').find({_id:ObjectId(id) }).toArray(function(err, result)
     {
@@ -82,23 +75,22 @@ app.post('/emp', (req, res) => {
   });
     
 
-  app.put('/emp/:id', function (req, res) 
+  app.put('/emp/:id', auth,function (req, res) 
   {
     var id = req.params.id;
-    console.log(id);
-    console.log("Boom");
+
     db.collection('employees').findOneAndUpdate({_id:ObjectId(id)},{$set: {name: req.body.name, position: req.body.position,
        office: req.body.office, salary: req.body.salary}},
      {upsert: true})
      .then(result => {
-      console.log("Boom1");
+      
        res.json('Success')
 
       })
      .catch(error => console.error(error))
   });
 
-  app.delete('/emp/:id', function (req, res) 
+  app.delete('/emp/:id', auth,function (req, res) 
   {
     var id = req.params.id;
     
